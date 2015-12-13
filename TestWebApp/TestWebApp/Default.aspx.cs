@@ -13,6 +13,12 @@ namespace TestWebApp
 {
     public partial class _Default : Page
     {
+        /*
+            Make list of stats affected by items and champ base stuff into object with associated viewstate
+            display the stats of that viewstate in the summary panel
+            Affect viewstate with all selecteditem stats
+            Do this every page_load
+        */
         protected void Page_Load(object sender, EventArgs e)
         {
 
@@ -33,7 +39,7 @@ namespace TestWebApp
                 {
                     CharacterBuild character = ((CharacterBuild)ViewState["CharacterBuild"]);
                     character.champion = ((Champion)ViewState["selectedChampion"]);
-
+                    character.abilitypower = "0";
                     //champStatisticGridView.DataSource = character.champion.stats;
                     //champStatisticGridView.DataBind();
                     if (ViewState["selectedItems"] != null)
@@ -112,7 +118,28 @@ namespace TestWebApp
                             {
                                 if(modifier.Contains("Attack Damage"))
                                 {
-                                    attackdamage.InnerHtml += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+                                    character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+                                }
+                                if (modifier.Contains("Magic Resist"))
+                                {
+                                    //character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+                                }
+                                if (modifier.Contains("Attack Speed"))
+                                {
+                                    character.champion.stats.attackspeedoffset += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+                                    //character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+                                }
+                                if (modifier.Contains("Cooldown Reduction"))
+                                {
+                                    //character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+                                }
+                                if (modifier.Contains("Ability Power"))
+                                {
+                                    int baseAP = 0;
+                                    int.TryParse(character.abilitypower, out baseAP);
+                                    int modAP = 0;
+                                    int.TryParse(modifier.Substring(1, modifier.IndexOf(" ") - 1), out modAP);
+                                    character.abilitypower += (baseAP + modAP).ToString();
                                 }
                             }
                         }
@@ -263,7 +290,7 @@ namespace TestWebApp
                 //filter into group lists
                 string lastGroup = String.Empty;
                 ViewState["ItemGroupList"] = new List<string>();
-                foreach (ItemData item in itemList)
+                foreach (ItemData item in itemList) 
                 {
                     if(item.group == null)
                     {
@@ -793,6 +820,8 @@ namespace TestWebApp
             
             if (((CharacterBuild)ViewState["CharacterBuild"]).champion != null)
             {
+                abilitypower.InnerHtml = "Ability Power: " + ((CharacterBuild)ViewState["CharacterBuild"]).abilitypower;
+
                 Champion champion = ((CharacterBuild)ViewState["CharacterBuild"]).champion;
 
                 armor.InnerHtml = "Armor: " + champion.stats.armor;

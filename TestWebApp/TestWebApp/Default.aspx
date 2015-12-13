@@ -25,6 +25,7 @@
         <asp:UpdatePanel runat="server" ID="champStatisticPanel" EnableViewState="true" >
             <ContentTemplate>
                 <div id="champstats">
+                    <div runat="server" id="abilitypower"/>
                     <div runat="server" id="armor"/>
                     <div runat="server" id="armorperlevel"/>
                     <div runat="server" id="attackdamage"/>
