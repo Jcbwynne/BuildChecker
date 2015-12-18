@@ -27,9 +27,10 @@ namespace TestWebApp
             //GetMasteries();
             //GetItems();
 
+            SetupViewStates();
+
             if (!Page.IsPostBack)
             {
-                SetupViewStates();
                 
 
             }
@@ -112,37 +113,7 @@ namespace TestWebApp
                             }
                         }
 
-                        foreach(ItemData item in selectedItems)
-                        {
-                            foreach(string modifier in item.modifier)
-                            {
-                                if(modifier.Contains("Attack Damage"))
-                                {
-                                    character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
-                                }
-                                if (modifier.Contains("Magic Resist"))
-                                {
-                                    //character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
-                                }
-                                if (modifier.Contains("Attack Speed"))
-                                {
-                                    character.champion.stats.attackspeedoffset += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
-                                    //character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
-                                }
-                                if (modifier.Contains("Cooldown Reduction"))
-                                {
-                                    //character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
-                                }
-                                if (modifier.Contains("Ability Power"))
-                                {
-                                    int baseAP = 0;
-                                    int.TryParse(character.abilitypower, out baseAP);
-                                    int modAP = 0;
-                                    int.TryParse(modifier.Substring(1, modifier.IndexOf(" ") - 1), out modAP);
-                                    character.abilitypower += (baseAP + modAP).ToString();
-                                }
-                            }
-                        }
+                        
                     }
                 }
                 //string controlName = Request.Params.Get("_EVENTTARGET");
@@ -152,6 +123,10 @@ namespace TestWebApp
 
         void SetupViewStates()
         {
+            if (ViewState["ItemListModTest"] == null)
+            {
+                ViewState["ItemListModTest"] = new List<ItemModifier>();
+            }
             if (ViewState["itemList"] == null)
             {
                 List<ItemData> itemList = GetItems();
@@ -172,6 +147,16 @@ namespace TestWebApp
                 ViewState["itemList"] = itemList;
             }
 
+            List<ItemModifier> modList = ViewState["ItemListModTest"] as List<ItemModifier>;
+            modList = new List<ItemModifier>();
+            foreach (ItemData item in (ViewState["itemList"] as List<ItemData>))
+            {
+                foreach (string modifier in item.modifier)
+                {
+                    
+                }
+            }
+
             if (ViewState["champList"] == null)
             {
                 List<Champion> champList = new List<Champion>();
@@ -189,11 +174,122 @@ namespace TestWebApp
             {
                 ViewState["selectedItems"] = new List<ItemData>();
             }
+            else
+            {
+                List<ItemData> selectedItems = ViewState["selectedItems"] as List<ItemData>;
+                ViewState["ItemModifierList"] = new List<ItemModifier>();
+                CharacterBuild character = ViewState["CharacterBuild"] as CharacterBuild;
+                foreach (ItemData item in selectedItems)
+                {
+                    foreach (string modifier in item.modifier)
+                    {
+                        ItemModifier itemMod = new ItemModifier();
+                        itemMod.itemName = item.name;
+
+                        if (modifier.Contains("Attack Speed"))
+                        { }
+                        else if (modifier.Contains("Magic Damage on Hit"))
+                        { }
+                        else if (modifier.Contains("Attack Damage"))
+                        { }
+                        else if (modifier.Contains("Armor Penetration"))
+                        { }
+                        else if (modifier.Contains("Cooldown Reduction"))
+                        { }
+                        else if (modifier.Contains("Ability Power"))
+                        { }
+                        else if (modifier.Contains("Base Mana Regen while in Jungle"))
+                        { }
+                        else if (modifier.Contains("Base Mana Regen"))
+                        { }
+                        else if (modifier.Contains("Mana"))
+                        { }
+                        else if (modifier.Contains("Critical Strike Chance"))
+                        { }
+                        else if (modifier.Contains("Movement Speed"))
+                        { }
+                        else if (modifier.Contains("Gold per"))
+                        { }
+                        else if (modifier.Contains("Life Steal vs. Monsters"))
+                        { }
+                        else if (modifier.Contains("Armor"))
+                        { }
+                        else if (modifier.Contains("Base Health Regen"))
+                        { }
+                        else if (modifier.Contains("Health Regen"))
+                        { }
+                        else if (modifier.Contains("Health"))
+                        { }
+                        else if (modifier.Contains("Life on Hit"))
+                        { }
+                        else if (modifier.Contains("Magic Resist"))
+                        { }
+                        else if (modifier.Contains("Mana Regen"))
+                        { }
+                        else if (modifier.Contains("Increased Healing from Potions"))
+                        { }
+                        else if (modifier.Contains("Life Steal"))
+                        { }
+                        else if (modifier.Contains("Damage taken from Critical Strikes"))
+                        { }
+                        else if (modifier.Contains("Magic Penetration"))
+                        { }
+
+
+                        if (modifier.Contains("Attack Damage"))
+                        {
+                            itemMod.modifier = "Attack Damage";
+                            
+                        }
+                        else if (modifier.Contains("Magic Damage on Hit"))
+                        {
+
+                        }
+                        else if (modifier.Contains("Magic Resist"))
+                        {
+                            itemMod.modifier = "Magic Resist";                        }
+                        else if (modifier.Contains("Armor Penetration"))
+                        {
+                            itemMod.modifier = "Armor Penetration";
+                        }
+                        else if (modifier.Contains("Attack Speed"))
+                        {
+                            itemMod.modifier = "Attack Speed";
+
+                        }
+                        else if (modifier.Contains("Cooldown Reduction"))
+                        {
+                            itemMod.modifier = "Cooldown Reduction";
+                        }
+                        else if (modifier.Contains("Ability Power"))
+                        {
+                            itemMod.modifier = "Ability Power";
+
+                        }
+                        else
+                        {
+                            List<string> itemmodifiers = new List<string>();
+                            itemmodifiers.Add(modifier);
+                            ViewState["ItemMiscModifiers"] = itemmodifiers;
+                        }
+                        (ViewState["ItemModifierList"] as List<ItemModifier>).Add(itemMod);
+                    }
+                }
+                if (ViewState["ItemMiscModifiers"] != null)
+                {
+                    List<string> modifiers = (List<string>)ViewState["ItemMiscModifiers"];
+                    foreach (string modifier in modifiers)
+                    {
+                        itemmisc.InnerHtml += "<br>" + modifier;
+                    }
+                }
+            }
         }
 
         public List<ItemData> GetItems()
         {
             List<ItemData> itemList = new List<ItemData>();
+            List<ItemData> itemDataTestList = new List<ItemData>();
 
             JsonParser parser = new JsonParser();
             using (WebClient webClient = new WebClient())
@@ -252,11 +348,15 @@ namespace TestWebApp
                                 itemData.from.Add(fromitem.ToString());
                             }
                         }
-
                         //TODO get Uniques
                     }
-                    if (((Dictionary<string, object>)itemData.maps).First(x => x.Key == "11").Value.ToString() == "True")
+
+                    if (((Dictionary<string, object>)itemData.maps).First(x => x.Key == "11").Value.ToString() == "True" && itemData.group != "PinkWards" && itemData.group != "Flasks" && itemData.group != "TheBlackSpear" && itemData.group != "RelicBase")
                     {
+                        if(itemData.group == "RelicBase")
+                        {
+                            itemDataTestList.Add(itemData);
+                        }
                         itemList.Add(itemData);
                     }
                 }
@@ -269,7 +369,10 @@ namespace TestWebApp
                         string[] modifiers = modifiertotal.Split(new string[] { "<br>" }, StringSplitOptions.None);
                         foreach (string modifier in modifiers)
                         {
-                            item.modifier.Add(modifier);
+                            if (!string.IsNullOrEmpty(modifier.Trim()))
+                            {
+                                item.modifier.Add(modifier);
+                            }
                         }
                     }
                 }
@@ -865,108 +968,6 @@ namespace TestWebApp
                 spellblockperlevel.InnerHtml = "Magic Resist Per Level: " + champion.stats.spellblockperlevel;
                 
             }
-            /*
-            HtmlGenericControl armor = new HtmlGenericControl("div");
-            armor.ID = "NEWControl" + Index;
-            armor.InnerHtml = "Armor: " + champion.stats.armor;
-            champStatisticPanel.Controls.Add(armor);
-            //newControl.Attributes["class"] = "Tile";
-            
-            HtmlGenericControl armorperlevel = new HtmlGenericControl("div");
-            armorperlevel.ID = "NEWControl" + Index;
-            armorperlevel.InnerHtml = "Armor Per Level: " + champion.stats.armorperlevel;
-            champStatisticPanel.Controls.Add(armorperlevel);
-
-            HtmlGenericControl attackdamage = new HtmlGenericControl("div");
-            attackdamage.ID = "NEWControl" + Index;
-            attackdamage.InnerHtml = "Attack Damage: " + champion.stats.attackdamage;
-            champStatisticPanel.Controls.Add(attackdamage);
-
-            HtmlGenericControl attackdamageperlevel = new HtmlGenericControl("div");
-            attackdamageperlevel.ID = "NEWControl" + Index;
-            attackdamageperlevel.InnerHtml = "Attack Damage Per Level: " + champion.stats.attackdamageperlevel;
-            champStatisticPanel.Controls.Add(attackdamageperlevel);
-
-            HtmlGenericControl attackrange = new HtmlGenericControl("div");
-            attackrange.ID = "NEWControl" + Index;
-            attackrange.InnerHtml = "Attack Range: " + champion.stats.attackrange;
-            champStatisticPanel.Controls.Add(attackrange);
-
-            HtmlGenericControl attackspeedoffset = new HtmlGenericControl("div");
-            attackspeedoffset.ID = "NEWControl" + Index;
-            attackspeedoffset.InnerHtml = "Attack Speed: " + champion.stats.attackspeedoffset;
-            champStatisticPanel.Controls.Add(attackspeedoffset);
-            
-            HtmlGenericControl attackspeedperlevel = new HtmlGenericControl("div");
-            attackspeedperlevel.ID = "NEWControl" + Index;
-            attackspeedperlevel.InnerHtml = "Attack Speed Per Level: " + champion.stats.attackspeedperlevel;
-            champStatisticPanel.Controls.Add(attackspeedperlevel);
-
-            HtmlGenericControl crit = new HtmlGenericControl("div");
-            crit.ID = "NEWControl" + Index;
-            crit.InnerHtml = "Critical Chance: " + champion.stats.crit;
-            champStatisticPanel.Controls.Add(crit);
-
-            HtmlGenericControl critperlevel = new HtmlGenericControl("div");
-            critperlevel.ID = "NEWControl" + Index;
-            critperlevel.InnerHtml = "Critical Chance Per Level: " + champion.stats.critperlevel;
-            champStatisticPanel.Controls.Add(critperlevel);
-
-            HtmlGenericControl hp = new HtmlGenericControl("div");
-            hp.ID = "NEWControl" + Index;
-            hp.InnerHtml = "HP: " + champion.stats.hp;
-            champStatisticPanel.Controls.Add(hp);
-
-            HtmlGenericControl hpperlevel = new HtmlGenericControl("div");
-            hpperlevel.ID = "NEWControl" + Index;
-            hpperlevel.InnerHtml = "HP Per Level: " + champion.stats.hpperlevel;
-            champStatisticPanel.Controls.Add(hpperlevel);
-
-            HtmlGenericControl hpregen = new HtmlGenericControl("div");
-            hpregen.ID = "NEWControl" + Index;
-            hpregen.InnerHtml = "HP Regen: " + champion.stats.hpregen;
-            champStatisticPanel.Controls.Add(hpregen);
-
-            HtmlGenericControl hpregenperlevel = new HtmlGenericControl("div");
-            hpregenperlevel.ID = "NEWControl" + Index;
-            hpregenperlevel.InnerHtml = "HP Regen Per Level: " + champion.stats.hpregenperlevel;
-            champStatisticPanel.Controls.Add(hpregenperlevel);
-
-            HtmlGenericControl movespeed = new HtmlGenericControl("div");
-            movespeed.ID = "NEWControl" + Index;
-            movespeed.InnerHtml = "Movespeed: " + champion.stats.movespeed;
-            champStatisticPanel.Controls.Add(movespeed);
-
-            HtmlGenericControl mp = new HtmlGenericControl("div");
-            mp.ID = "NEWControl" + Index;
-            mp.InnerHtml = "MP: " + champion.stats.mp;
-            champStatisticPanel.Controls.Add(mp);
-
-            HtmlGenericControl mpperlevel = new HtmlGenericControl("div");
-            mpperlevel.ID = "NEWControl" + Index;
-            mpperlevel.InnerHtml = "MP Per Level: " + champion.stats.mpperlevel;
-            champStatisticPanel.Controls.Add(mpperlevel);
-
-            HtmlGenericControl mpregen = new HtmlGenericControl("div");
-            mpregen.ID = "NEWControl" + Index;
-            mpregen.InnerHtml = "MP Regen: " + champion.stats.mpregen;
-            champStatisticPanel.Controls.Add(mpregen);
-
-            HtmlGenericControl mpregenperlevel = new HtmlGenericControl("div");
-            mpregenperlevel.ID = "NEWControl" + Index;
-            mpregenperlevel.InnerHtml = "MP Regen Per Level: " + champion.stats.mpregenperlevel;
-            champStatisticPanel.Controls.Add(mpregenperlevel);
-
-            HtmlGenericControl spellblock = new HtmlGenericControl("div");
-            spellblock.ID = "NEWControl" + Index;
-            spellblock.InnerHtml = "Magic Resist: " + champion.stats.spellblock;
-            champStatisticPanel.Controls.Add(spellblock);
-
-            HtmlGenericControl spellblockperlevel = new HtmlGenericControl("div");
-            spellblockperlevel.ID = "NEWControl" + Index;
-            spellblockperlevel.InnerHtml = "Magic Resist Per Level: " + champion.stats.spellblockperlevel;
-            champStatisticPanel.Controls.Add(spellblockperlevel);
-            */
         }
 
         public int Index
@@ -1004,4 +1005,131 @@ namespace TestWebApp
         }
     }
 }
- 
+
+
+/*
+int baseAD = 0;
+int.TryParse(character.champion.stats.attackdamage, out baseAD);
+int modAD = 0;
+int.TryParse(modifier.Substring(1, modifier.IndexOf(" ") - 1), out modAD);
+character.champion.stats.attackdamage += (baseAD + modAD).ToString();
+*/
+//character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+//character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+
+//character.champion.stats.attackspeedoffset += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+//character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+
+//character.champion.stats.attackdamage += " + " + modifier.Substring(1, modifier.IndexOf(" ") - 1);
+
+/*
+int baseAP = 0;
+int.TryParse(character.abilitypower, out baseAP);
+int modAP = 0;
+int.TryParse(modifier.Substring(1, modifier.IndexOf(" ") - 1), out modAP);
+character.abilitypower += (baseAP + modAP).ToString();
+*/
+
+
+/*
+HtmlGenericControl armor = new HtmlGenericControl("div");
+armor.ID = "NEWControl" + Index;
+armor.InnerHtml = "Armor: " + champion.stats.armor;
+champStatisticPanel.Controls.Add(armor);
+//newControl.Attributes["class"] = "Tile";
+
+HtmlGenericControl armorperlevel = new HtmlGenericControl("div");
+armorperlevel.ID = "NEWControl" + Index;
+armorperlevel.InnerHtml = "Armor Per Level: " + champion.stats.armorperlevel;
+champStatisticPanel.Controls.Add(armorperlevel);
+
+HtmlGenericControl attackdamage = new HtmlGenericControl("div");
+attackdamage.ID = "NEWControl" + Index;
+attackdamage.InnerHtml = "Attack Damage: " + champion.stats.attackdamage;
+champStatisticPanel.Controls.Add(attackdamage);
+
+HtmlGenericControl attackdamageperlevel = new HtmlGenericControl("div");
+attackdamageperlevel.ID = "NEWControl" + Index;
+attackdamageperlevel.InnerHtml = "Attack Damage Per Level: " + champion.stats.attackdamageperlevel;
+champStatisticPanel.Controls.Add(attackdamageperlevel);
+
+HtmlGenericControl attackrange = new HtmlGenericControl("div");
+attackrange.ID = "NEWControl" + Index;
+attackrange.InnerHtml = "Attack Range: " + champion.stats.attackrange;
+champStatisticPanel.Controls.Add(attackrange);
+
+HtmlGenericControl attackspeedoffset = new HtmlGenericControl("div");
+attackspeedoffset.ID = "NEWControl" + Index;
+attackspeedoffset.InnerHtml = "Attack Speed: " + champion.stats.attackspeedoffset;
+champStatisticPanel.Controls.Add(attackspeedoffset);
+
+HtmlGenericControl attackspeedperlevel = new HtmlGenericControl("div");
+attackspeedperlevel.ID = "NEWControl" + Index;
+attackspeedperlevel.InnerHtml = "Attack Speed Per Level: " + champion.stats.attackspeedperlevel;
+champStatisticPanel.Controls.Add(attackspeedperlevel);
+
+HtmlGenericControl crit = new HtmlGenericControl("div");
+crit.ID = "NEWControl" + Index;
+crit.InnerHtml = "Critical Chance: " + champion.stats.crit;
+champStatisticPanel.Controls.Add(crit);
+
+HtmlGenericControl critperlevel = new HtmlGenericControl("div");
+critperlevel.ID = "NEWControl" + Index;
+critperlevel.InnerHtml = "Critical Chance Per Level: " + champion.stats.critperlevel;
+champStatisticPanel.Controls.Add(critperlevel);
+
+HtmlGenericControl hp = new HtmlGenericControl("div");
+hp.ID = "NEWControl" + Index;
+hp.InnerHtml = "HP: " + champion.stats.hp;
+champStatisticPanel.Controls.Add(hp);
+
+HtmlGenericControl hpperlevel = new HtmlGenericControl("div");
+hpperlevel.ID = "NEWControl" + Index;
+hpperlevel.InnerHtml = "HP Per Level: " + champion.stats.hpperlevel;
+champStatisticPanel.Controls.Add(hpperlevel);
+
+HtmlGenericControl hpregen = new HtmlGenericControl("div");
+hpregen.ID = "NEWControl" + Index;
+hpregen.InnerHtml = "HP Regen: " + champion.stats.hpregen;
+champStatisticPanel.Controls.Add(hpregen);
+
+HtmlGenericControl hpregenperlevel = new HtmlGenericControl("div");
+hpregenperlevel.ID = "NEWControl" + Index;
+hpregenperlevel.InnerHtml = "HP Regen Per Level: " + champion.stats.hpregenperlevel;
+champStatisticPanel.Controls.Add(hpregenperlevel);
+
+HtmlGenericControl movespeed = new HtmlGenericControl("div");
+movespeed.ID = "NEWControl" + Index;
+movespeed.InnerHtml = "Movespeed: " + champion.stats.movespeed;
+champStatisticPanel.Controls.Add(movespeed);
+
+HtmlGenericControl mp = new HtmlGenericControl("div");
+mp.ID = "NEWControl" + Index;
+mp.InnerHtml = "MP: " + champion.stats.mp;
+champStatisticPanel.Controls.Add(mp);
+
+HtmlGenericControl mpperlevel = new HtmlGenericControl("div");
+mpperlevel.ID = "NEWControl" + Index;
+mpperlevel.InnerHtml = "MP Per Level: " + champion.stats.mpperlevel;
+champStatisticPanel.Controls.Add(mpperlevel);
+
+HtmlGenericControl mpregen = new HtmlGenericControl("div");
+mpregen.ID = "NEWControl" + Index;
+mpregen.InnerHtml = "MP Regen: " + champion.stats.mpregen;
+champStatisticPanel.Controls.Add(mpregen);
+
+HtmlGenericControl mpregenperlevel = new HtmlGenericControl("div");
+mpregenperlevel.ID = "NEWControl" + Index;
+mpregenperlevel.InnerHtml = "MP Regen Per Level: " + champion.stats.mpregenperlevel;
+champStatisticPanel.Controls.Add(mpregenperlevel);
+
+HtmlGenericControl spellblock = new HtmlGenericControl("div");
+spellblock.ID = "NEWControl" + Index;
+spellblock.InnerHtml = "Magic Resist: " + champion.stats.spellblock;
+champStatisticPanel.Controls.Add(spellblock);
+
+HtmlGenericControl spellblockperlevel = new HtmlGenericControl("div");
+spellblockperlevel.ID = "NEWControl" + Index;
+spellblockperlevel.InnerHtml = "Magic Resist Per Level: " + champion.stats.spellblockperlevel;
+champStatisticPanel.Controls.Add(spellblockperlevel);
+*/

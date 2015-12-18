@@ -47,6 +47,9 @@
                     <div runat="server" id="spellblock"/>
                     <div runat="server" id="spellblockperlevel"/>
                 </div>
+                <div id="item misc">
+                    <div runat="server" id="itemmisc" />
+                </div>
             </ContentTemplate>
         </asp:UpdatePanel>
     </asp:Panel>
